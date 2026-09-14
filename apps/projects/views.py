@@ -82,3 +82,27 @@ def toggle_participation(request, project_id):
         return JsonResponse({"status": "error", "message": "Нельзя вступить в закрытый проект."}, status=400)
     project.participants.add(request.user)
     return JsonResponse({"status": "ok", "participant": True})
+
+@require_POST
+@login_required
+def toggle_favorite(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    if request.user.favorites.filter(pk=project.pk).exists():
+        request.user.favorites.remove(project)
+        return JsonResponse({"status": "ok", "favorited": False})
+    request.user.favorites.add(project)
+    return JsonResponse({"status": "ok", "favorited": True})
+
+
+@login_required
+def favorite_projects(request):
+    projects = (
+        request.user.favorites
+        .select_related("owner")
+        .prefetch_related("participants")
+    )
+    return render(
+    request,
+        "projects/favorite_projects.html",
+        {"projects": projects},
+    )

@@ -72,6 +72,28 @@ def change_password(request):
 
 def user_list(request):
     participants = User.objects.order_by("-id")
+    active_filter = None
+
+    if request.user.is_authenticated:
+        selected_filter = request.GET.get("filter")
+        filters = {
+            "owners-of-favorite-projects": User.objects.filter(
+                owned_projects__interested_users=request.user,
+            ),
+            "owners-of-participating-projects": User.objects.filter(
+                owned_projects__participants=request.user,
+            ),
+            "interested-in-my-projects": User.objects.filter(
+                favorites__owner=request.user,
+            ).exclude(pk=request.user.pk),
+            "participants-of-my-projects": User.objects.filter(
+                participated_projects__owner=request.user,
+            ).exclude(pk=request.user.pk),
+        }
+        if selected_filter in filters:
+            active_filter = selected_filter
+            participants = filters[selected_filter].distinct().order_by("-id")
+
     paginator = Paginator(participants, 12)
     page_obj = paginator.get_page(request.GET.get("page"))
     return render(
@@ -80,7 +102,7 @@ def user_list(request):
         {
             "participants": participants,
             "page_obj": page_obj,
-            "query_prefix": "",
-            "active_filter": None,
+            "query_prefix": f"filter={active_filter}&" if active_filter else "",
+            "active_filter": active_filter,
         },
     )
