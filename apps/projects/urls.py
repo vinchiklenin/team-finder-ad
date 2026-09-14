@@ -1,8 +1,14 @@
 from django.urls import path
+
 from . import views
 
 app_name = 'projects'
 
 urlpatterns = [
-    path('', views.meeting, name='meeting')
+    path("list/", views.project_list, name="list"),
+    path("create-project/", views.create_project, name="create"),
+    path("<int:project_id>/edit/", views.edit_project, name="edit"),
+    path("<int:project_id>/complete/", views.complete_project, name="complete"),
+    path("<int:project_id>/toggle-participate/", views.toggle_participation, name="toggle_participation"),
+    path("<int:project_id>/", views.project_detail, name="detail"),
 ]

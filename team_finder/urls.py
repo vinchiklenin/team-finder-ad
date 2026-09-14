@@ -9,5 +9,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('projects/', include('apps.projects.urls', namespace='projects')),
-    path('', RedirectView.as_view(url='/projects/', permanent=False))
+    path('users/', include('apps.users.urls', namespace='users')),
+    path('', RedirectView.as_view(url='/projects/list/', permanent=False)),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
