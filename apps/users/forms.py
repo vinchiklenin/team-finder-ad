@@ -47,7 +47,11 @@ class LoginForm(forms.Form):
 class ProfileForm(forms.Form):
     name = forms.CharField(label="Имя", max_length=124)
     surname = forms.CharField(label="Фамилия", max_length=124)
-    avatar = forms.ImageField(label="Аватар", required=False)
+    avatar = forms.ImageField(
+        label="Аватар",
+        required=False,
+        widget=forms.ClearableFileInput(attrs={"accept": "image/*"}),
+    )
     about = forms.CharField(label="О себе", max_length=256, required=False, widget=forms.Textarea)
     github_url = forms.URLField(label="Ссылка на GitHub", required=False)
 

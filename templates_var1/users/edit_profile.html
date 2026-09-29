@@ -17,9 +17,9 @@
         <div class="avatar-upload">
             <div class="avatar-preview">
                 {% if user.avatar %}
-                    <img src="{{ user.avatar.url }}" alt="Аватар">
+                    <img id="avatar-preview-image" src="{{ user.avatar.url }}" alt="Аватар">
                 {% else %}
-                    <img src="{% static 'images/default-avatar.png' %}" alt="Аватар по умолчанию">
+                    <img id="avatar-preview-image" src="{% static 'images/default-avatar.png' %}" alt="Аватар по умолчанию">
                 {% endif %}
                 <div class="overlay">
                     <button type="button" onclick="document.getElementById('id_avatar').click()">Заменить</button>
@@ -67,4 +67,8 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/profile-avatar.js' %}"></script>
 {% endblock %}
